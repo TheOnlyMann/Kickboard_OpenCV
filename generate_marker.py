@@ -112,3 +112,29 @@ def create_colored_aruco_marker(marker_id, color_names, verbose=True):
         plt.title(f"Colored ArUco Marker {marker_id} ({color_names[0]}, {color_names[1]})")
         plt.show()
     return bg_img
+
+
+def create_color_aruco_marker(marker_id, fg_color=(0, 0, 0), bg_color=(255, 255, 255), marker_size=200, verbose=True):
+    """
+    색상 커스터마이징된 ArUco 마커 생성 (인식은 grayscale 기준으로 가능)
+    fg_color: 마커 내부 (원래는 검정)
+    bg_color: 마커 배경 (원래는 흰색)
+    """
+    aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
+    marker_bw = aruco.generateImageMarker(aruco_dict, marker_id, marker_size)
+
+    # 컬러 마커 생성
+    marker_colored = np.zeros((marker_size, marker_size, 3), dtype=np.uint8)
+    marker_colored[:, :] = bg_color
+    marker_colored[marker_bw == 0] = fg_color
+
+    filename = f"color_aruco_marker_{marker_id}_{fg_color}_{bg_color}.png"
+    cv2.imwrite(filename, marker_colored)
+    print(f"✅ 저장됨: {filename}")
+    if verbose:
+        plt.imshow(marker_colored)
+        plt.axis('off')
+        plt.title(f"Color ArUco Marker {marker_id} ({fg_color}, {bg_color})")
+        plt.show()
+
+    return marker_colored
