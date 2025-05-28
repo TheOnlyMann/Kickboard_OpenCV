@@ -104,9 +104,17 @@ def sliding_crop_zoom_detection_colorless(image, crop_size=500, step=250, zoom=2
 
     return detected
 
+def import_image(image_path):
+    """
+    이미지 파일을 읽어오는 함수.
+    """
+    image = cv2.imread(image_path)
+    if image is None:
+        raise ValueError(f"이미지를 불러올 수 없습니다: {image_path}")
+    return image
 # Example usage
 
-input_image = cv2.imread("20250527_161854.jpg")
+input_image = import_image("20250527_161854.jpg")  # Replace with your image path
 detected = sliding_crop_zoom_detection_colorless(preprocess_image(input_image), crop_size=200, step=100, zoom=5, verbose=False)
 for item in detected:
     print(f"Detected Marker ID: {item['id']} at ROI: {item['roi']}")
